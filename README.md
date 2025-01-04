@@ -31,6 +31,7 @@
 ### 2. 配置 A 电脑的端口转发 netsh 或者 nginx，以下是netsh的配置方法
 
 1. 打开 A 电脑的命令提示符（cmd）。
+2. 获取 A 电脑的局域网ip，不会的请百度。获取到ip例如：`192.168.1.100`
 2. 输入以下命令，将 `192.168.1.100` 替换为 A 电脑的局域网 IP 地址：
    ```
    netsh interface portproxy add v4tov4 listenaddress=192.168.1.100 listenport=19222 connectaddress=127.0.0.1 connectport=19222
