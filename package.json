@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev": " pm2 start ./autoLogin.js --watch --restart-delay 1000",
+    "start": "node ./autoLogin.js"
+  },
+  "dependencies": {
+    "puppeteer": "^23.11.1",
+    "puppeteer-real-browser": "^1.3.21"
+  }
+}
