@@ -59,6 +59,14 @@
    ```
    npm run dev
    ```
+7. 停止脚本：
+   ```
+   pm2 stop autoLogin
+   ```
+8. 重启脚本：
+   ```
+   pm2 restart autoLogin
+   ```
 
 ## 运行效果
 
