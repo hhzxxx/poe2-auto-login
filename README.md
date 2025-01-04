@@ -49,10 +49,11 @@
    ```
    npm install pm2 -g
    ```
-5. 修改代码中的 `webDevAddress`，将其改为 A 电脑的调试地址。例如：
+5. 打开autoLogin.js文件 修改代码中的 `webDevAddress`，将其改为 A 电脑的调试地址。例如：
    ```
    http://192.168.1.100:19222
    ```
+   修改你自己的账号密码
 6. 运行脚本：
    ```
    npm run dev
