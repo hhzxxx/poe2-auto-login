@@ -38,54 +38,63 @@ async function autoLoginPoe2(username, password, webDevAddress) {
 		ignoreAllFlags: false,
 	})
 
-	// const page = await browser.newPage();
-	await page.goto('https://www.pathofexile.com/login', {
-		waitUntil: 'networkidle2',
-	})
+	try {
+		// const page = await browser.newPage();
+		await page.goto('https://www.pathofexile.com/login', {
+			waitUntil: 'networkidle2',
+		})
 
-	let login = false
+		let login = false
 
-	let count = 0
-  while (true) {
-    count++
-		console.log('尝试登陆', count)
-		if (count > 20) {
-			console.log('尝试登陆失败')
-			return
-		}
-		const emailInput = await page.$('input[name="login_email"]')
-		if (emailInput && !login) {
-			await page.type('input[name="login_email"]', username)
-			await page.type('input[name="login_password"]', password)
-			await page.click('.sign-in__submit')
-			login = true
-		}
-		if (login) {
-			const requestPromise = new Promise((resolve) => {
-				const timeout = setTimeout(() => {
-					resolve(null)
-				}, 15000)
-				page.on('request', (request) => {
-					if (request.url().match(/showcase-pins/)) {
-						clearTimeout(timeout)
-						resolve(request)
-					}
-				})
-			})
-			const request = await requestPromise
-			if (request) {
-				const cookies = await page.cookies()
-				console.log('登陆成功')
-				state = await modifyCookies(cookies, webDevAddress)
-			} else {
-				console.log('登陆失败')
+		let count = 0
+		while (true) {
+			count++
+			console.log('尝试登陆', count)
+			if (count > 20) {
+				console.log('尝试登陆失败')
+				return
 			}
-			await page.close()
-			await browser.close()
-      break
+			const emailInput = await page.$('input[name="login_email"]')
+			if (emailInput && !login) {
+				await page.type('input[name="login_email"]', username)
+				await page.type('input[name="login_password"]', password)
+				await page.click('.sign-in__submit')
+				login = true
+			}
+			if (login) {
+				const requestPromise = new Promise((resolve) => {
+					const timeout = setTimeout(() => {
+						resolve(null)
+					}, 15000)
+					page.on('request', (request) => {
+						if (request.url().match(/showcase-pins/)) {
+							clearTimeout(timeout)
+							resolve(request)
+						}
+					})
+				})
+				const request = await requestPromise
+				if (request) {
+					const cookies = await page.cookies()
+					console.log('登陆成功')
+					state = await modifyCookies(cookies, webDevAddress)
+				} else {
+					console.log('登陆失败')
+				}
+				await page.close()
+				await browser.close()
+				break
+			}
+			await new Promise((r) => setTimeout(r, 5000))
 		}
-    await new Promise((r) => setTimeout(r, 5000))
-  }
+	} catch (error) {
+		if (page) {
+			await page.close()
+		}
+		if (browser) {
+			await browser.close()
+		}
+	}
 	return state
 }
 
