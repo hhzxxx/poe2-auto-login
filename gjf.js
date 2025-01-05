@@ -88,13 +88,15 @@ async function autoLoginPoe2(username, password, webDevAddress) {
 			await new Promise((r) => setTimeout(r, 5000))
 		}
 	} catch (error) {
-		if (page) {
+		console.error('登陆失败:', error)
+	}finally{
+    if (page) {
 			await page.close()
 		}
 		if (browser) {
 			await browser.close()
 		}
-	}
+  }
 	return state
 }
 
