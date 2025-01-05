@@ -1,6 +1,9 @@
 const { connect } = require('puppeteer-real-browser')
 const puppeteer = require('puppeteer')
 
+let lastCookies = null
+let lastCookieTime = 0
+
 const connectWithTimeout = async (browserURL, timeout) => {
 	return Promise.race([
 		puppeteer.connect({ browserURL }),
@@ -10,13 +13,16 @@ const connectWithTimeout = async (browserURL, timeout) => {
 	])
 }
 
-async function modifyCookies(cookies1, webDevAddress) {
+async function modifyCookies( webDevAddress) {
+  if(!lastCookies || (Date.now() - lastCookieTime > 1000 * 60 * 30)){
+    return 0
+  }
 	try {
 		// 连接到现有浏览器实例
 		const browserURL = webDevAddress // 浏览器的调试地址
 		console.log('开始设置cookie', webDevAddress)
 		const browser = await connectWithTimeout(browserURL, 5000)
-		await browser.setCookie(...cookies1)
+		await browser.setCookie(...lastCookies)
 		await browser.disconnect()
 		console.info('cookie设置成功')
 		return 1
@@ -76,8 +82,11 @@ async function autoLoginPoe2(username, password, webDevAddress) {
 				const request = await requestPromise
 				if (request) {
 					const cookies = await page.cookies()
+          lastCookies = cookies
+          lastCookieTime = Date.now()
 					console.log('登陆成功')
-					state = await modifyCookies(cookies, webDevAddress)
+          state = 1;
+					// state = await modifyCookies(cookies, webDevAddress)
 				} else {
 					console.log('登陆失败')
 				}
@@ -102,4 +111,5 @@ async function autoLoginPoe2(username, password, webDevAddress) {
 
 module.exports = {
 	autoLoginPoe2,
+  modifyCookies
 }
