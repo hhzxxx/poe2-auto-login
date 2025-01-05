@@ -99,10 +99,10 @@ async function autoLoginPoe2(username, password, webDevAddress) {
 	} catch (error) {
 		console.error('登陆失败:', error)
 	}finally{
-    if (page) {
+    if (page && !page.isClosed()) {
 			await page.close()
 		}
-		if (browser) {
+		if (browser && browser.connected) {
 			await browser.close()
 		}
   }
