@@ -88,6 +88,10 @@ async function autoLoginPoe2(username, password, webDevAddress) {
           state = 1;
 					// state = await modifyCookies(cookies, webDevAddress)
 				} else {
+          const checkProtection = await page.$('.sign-in__errors')
+          if(checkProtection){
+            state = 999;
+          }
 					console.log('登陆失败')
 				}
 				await page.close()

@@ -16,8 +16,11 @@ let webDevAddress = 'http://192.168.2.130:19222'
 		if (Date.now() - lastLogin > 1000 * 60 * interval) {
       //获取cookie
 		  const state =	await autoLoginPoe2(username, password,webDevAddress)
-      if(state > 0){
+      if(state == 1){
         lastLogin = Date.now()
+      }else if(state == 999){
+        console.log('登陆保护，等待一小时后继续')
+        lastLogin = Date.now() + 1000 * 60 * 60
       }
 		}
     await modifyCookies(webDevAddress)
